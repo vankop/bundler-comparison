@@ -20,11 +20,13 @@ async function main() {
 	sizes.rollup = fs.statSync('results/rollup.js').size;
 	console.log(`rollup: ${pb(sizes.rollup)}`);
 
-	await exec('npx webpack -c');
+	await exec('npx webpack');
 	sizes.webpack = fs.statSync('results/webpack.js').size;
 	console.log(`webpack: ${pb(sizes.webpack)}`);
 
-	await exec('npx parcel build -d results -o parcel.js -t node index.js');
+	await exec('npx parcel build index.js --dist-dir results --no-scope-hoist');
+	await fs.renameSync("results/index.js", "results/parcel.js");
+	await fs.renameSync("results/index.js.map", "results/parcel.js.map");
 	sizes.parcel = fs.statSync('results/parcel.js').size;
 	console.log(`parcel: ${pb(sizes.parcel)}`);
 
