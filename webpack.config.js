@@ -5,6 +5,13 @@ module.exports = {
 		filename: 'webpack.js',
 		libraryTarget: 'commonjs'
 	},
+	module: {
+		rules: [
+			{
+				type: "javascript/esm"
+			}
+		]
+	},
 	devtool: 'source-map',
 	mode: 'production'
 };
