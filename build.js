@@ -15,7 +15,7 @@ async function main() {
 		webpack: null,
 		parcel: null
 	};
-	
+
 	await exec('npx rollup -c');
 	sizes.rollup = fs.statSync('results/rollup.js').size;
 	console.log(`rollup: ${pb(sizes.rollup)}`);
@@ -30,6 +30,10 @@ async function main() {
 	sizes.parcel = fs.statSync('results/parcel.js').size;
 	console.log(`parcel: ${pb(sizes.parcel)}`);
 
+	await exec('npx esbuild --format=esm --outfile=results/esbuild.js --bundle --minify index.js');
+	sizes.esbuild = fs.statSync('results/esbuild.js').size;
+	console.log(`esbuild: ${pb(sizes.esbuild)}`);
+
 	const max_size = Math.max(...Object.values(sizes));
 
 	const results = `
@@ -38,6 +42,7 @@ async function main() {
 | rollup  | ${bar(sizes.rollup / max_size)} ${pb(sizes.rollup)}   |
 | webpack | ${bar(sizes.webpack / max_size)} ${pb(sizes.webpack)} |
 | parcel  | ${bar(sizes.parcel / max_size)} ${pb(sizes.parcel)}   |
+| esbuild  | ${bar(sizes.esbuild / max_size)} ${pb(sizes.esbuild)}   |
 `.trim();
 
 	const README = fs.readFileSync('README.md', 'utf-8').replace(/<!-- START -->[\s\S]+<!-- END -->/m, `<!-- START -->\n${results}\n<!-- END -->`);
